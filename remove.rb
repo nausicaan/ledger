@@ -6,9 +6,9 @@ arguments = ARGV
 require 'yaml'
 
 users = YAML.load_file(Dir.home + '/yaml/compendium.yaml')
-flag, server, @path = arguments[0], arguments[1], arguments[2]
-@cutoff = 1640995201
-@task, @cut = [], []
+flag, @server, @path = arguments[0], arguments[1], arguments[2]
+@cutoff = 1609459201
+@task, @cut = ["Username, URL, Timestamp"], []
 
 # Write a passed variable to a named file
 def document(file, content)
@@ -26,7 +26,7 @@ end
 
 # Gather a list of potential users to delete
 def target(who, ts, uid, where)
-  if ts.to_i < @cutoff && where != "http://#{server}"
+  if ts.to_i < @cutoff && where != "http://#{@server}/"
     @task << "#{who},#{where},#{ts}"
     @cut << "wp user delete #{uid} --reassign=31 --url=#{where} --path=#{@path}"
   end
@@ -47,7 +47,7 @@ case flag
 when '-k'
   remove()
 when '-c'
-  document('/sources/candidates.txt', @task)
+  document('/sources/candidates.csv', @task)
 else
   $stdout.puts 'Bad flag'
 end

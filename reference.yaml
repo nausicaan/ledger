@@ -39,6 +39,6 @@
     - name: Write message to logging
       ansible.builtin.lineinfile:
         path: logs/ansible.log
-        line: "{{ ansible_date_time.iso8601 }} - Reference files successfully created."
+        line: "{{ now(true) }} - Reference files successfully created."
         create: true
 ...

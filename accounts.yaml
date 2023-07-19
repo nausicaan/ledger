@@ -27,7 +27,7 @@
 
         - name: Download the candidates for deletion file
           ansible.builtin.fetch:
-            src: "sources/candidates.txt"
+            src: "sources/candidates.csv"
             dest: "{{ GIT }}results/"
             flat: true
 
