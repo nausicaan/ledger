@@ -1,0 +1,54 @@
+---
+- name: Create sources for building infrastructure files
+  hosts: chimera
+  vars_files: defaults/main.yaml
+  gather_facts: false
+  ignore_errors: true
+  tasks:
+    - name: Create the urls.txt file
+      tags: solo
+      block:
+        - name: Get the list of WordPress site urls
+          ansible.builtin.command: wp site list --url="{{ TEST }}" --path="{{ WPATH }}" --field=url
+          register: solo
+          changed_when: solo.rc != 0
+
+        - name: Write the site urls to urls.txt
+          ansible.builtin.copy:
+            content: "{{ solo.stdout }}"
+            dest: sources/urls.txt
+            mode: "0644"
+
+    - name: Create the blogs.csv file
+      tags: duo
+      block:
+        - name: Get urls and blog_ids
+          ansible.builtin.command: wp site list --url="{{ TEST }}" --path="{{ WPATH }}" --fields=blog_id,url --format=csv
+          register: duo
+          changed_when: duo.rc != 0
+
+        - name: Write the urls and blog_ids to blogs.csv
+          ansible.builtin.copy:
+            content: "{{ duo.stdout }}"
+            dest: sources/blogs.csv
+            mode: "0644"
+
+        - name: Delete the header row
+          ansible.builtin.lineinfile:
+            path: sources/blogs.csv
+            search_string: "blog_id,url"
+            state: absent
+            mode: "0644"
+
+        - name: Replace all newlines
+          ansible.builtin.replace:
+            path: sources/blogs.csv
+            regexp: "\n"
+            replace: ","
+
+    - name: Write message to logging
+      ansible.builtin.lineinfile:
+        path: logs/ansible.log
+        line: "{{ ansible_date_time.iso8601 }} - Source files successfully created."
+        create: true
+...

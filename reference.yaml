@@ -1,0 +1,44 @@
+---
+- name: Build the reference yaml files capturing variations of site data
+  hosts: chimera
+  vars_files: defaults/main.yaml
+  gather_facts: false
+  ignore_errors: true
+  tasks:
+    - name: Build a list of urls and blog ids
+      tags: duo
+      block:
+        - name: Compile urls-ids.yaml file
+          ansible.builtin.script:
+            cmd: "{{ GIT }}reference.rb -d"
+
+    - name: Build a list of only urls
+      tags: solo
+      block:
+        - name: Compile urls.yaml file
+          ansible.builtin.script:
+            cmd: "{{ GIT }}reference.rb -s"
+
+    - name: Build a list of sites and blog ids sorted by type
+      tags: type
+      block:
+        - name: Compile blog-types.yaml file
+          ansible.builtin.script:
+            cmd: "{{ GIT }}reference.rb -t"
+
+    - name: Download the reference files
+      ansible.builtin.fetch:
+        src: "{{ item }}"
+        dest: "{{ GIT }}results/"
+        flat: true
+      loop:
+        - sources/urls-ids.yaml
+        - sources/urls.yaml
+        - yaml/blog-types.yaml
+
+    - name: Write message to logging
+      ansible.builtin.lineinfile:
+        path: logs/ansible.log
+        line: "{{ ansible_date_time.iso8601 }} - Reference files successfully created."
+        create: true
+...

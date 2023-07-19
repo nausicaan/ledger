@@ -1,0 +1,39 @@
+---
+- name: Create a list of user/sites
+  hosts: chimera
+  vars_files: defaults/main.yaml
+  gather_facts: false
+  ignore_errors: true
+  tasks:
+    - name: Build a complete list of users and their WordPress accounts
+      tags: compile
+      block:
+        - name: Compile the user data
+          ansible.builtin.script:
+            cmd: "{{ GIT }}accounts.rb {{ TEST }} {{ WPATH }}"
+
+        - name: Download the compendium.yaml file
+          ansible.builtin.fetch:
+            src: yaml/compendium.yaml
+            dest: "{{ GIT }}results/"
+            flat: true
+
+    - name: Delete obsolete users from WordPress
+      tags: remove
+      block:
+        - name: Remove designated users
+          ansible.builtin.script:
+            cmd: "{{ GIT }}remove.rb {{ FLAG }} {{ TEST }} {{ WPATH }}"
+
+        - name: Download the candidates for deletion file
+          ansible.builtin.fetch:
+            src: "sources/candidates.txt"
+            dest: "{{ GIT }}results/"
+            flat: true
+
+    - name: Write message to logging
+      ansible.builtin.lineinfile:
+        path: logs/ansible.log
+        line: "{{ ansible_date_time.iso8601 }} - User files successfully created."
+        create: true
+...

@@ -1,0 +1,23 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Dependency directories
+defaults/
+logs/
+results/
+sources/
+test/
+vendor/
+
+# Generated files
+.DS_Store
+.idea
+.rub*
+.Trashes
+.vscode
+ehthumbs.db
+Thumbs.db
