@@ -63,4 +63,5 @@
         path: logs/ansible.log
         line: "{{ now(true) }} - Source files successfully created"
         create: true
+        mode: '0644'
 ...

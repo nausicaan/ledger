@@ -12,11 +12,19 @@
           ansible.builtin.script:
             cmd: "{{ GIT }}plugins/report.rb {{ TESTPATH }} inactive"
 
+        - name: Fix empty Plugin field at bcgov-opengraph
+          ansible.builtin.replace:
+            path: site-inactive-plugins.yaml
+            regexp: '  - Plugin: bcgov-opengraph\n    Version: '
+            replace: '  - Plugin: bcgov-opengraph\n    Version: 1.8.0'
+            mode: '0644'
+
         - name: Download the site-inactive-plugins.yaml file
           ansible.builtin.fetch:
             src: plugins/site-inactive-plugins.yaml
             dest: "{{ GIT }}results/"
             flat: true
+            mode: '0644'
 
     - name: Build a complete list of plugins at the domain level
       tags: single
@@ -34,6 +42,7 @@
             src: plugins/inactive-plugins-list.txt
             dest: "{{ GIT }}results/"
             flat: true
+            mode: '0644'
 
     - name: Build a complete list of plugins and their version at the domain level
       tags: combo
@@ -47,4 +56,5 @@
             src: plugins/domain-inactive-plugins.yaml
             dest: "{{ GIT }}results/"
             flat: true
+            mode: '0644'
 ...

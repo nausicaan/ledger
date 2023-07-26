@@ -34,6 +34,6 @@
     - name: Write message to logging
       ansible.builtin.lineinfile:
         path: logs/ansible.log
-        line: "{{ ansible_date_time.iso8601 }} - User files successfully created."
+        line: "{{ now(true) }} - User files successfully created."
         create: true
 ...
