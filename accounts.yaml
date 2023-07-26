@@ -10,7 +10,7 @@
       block:
         - name: Compile the user data
           ansible.builtin.script:
-            cmd: "{{ GIT }}accounts.rb {{ TEST }} {{ WPATH }}"
+            cmd: "{{ GIT }}accounts.rb {{ TEST }} {{ TESTPATH }}"
 
         - name: Download the compendium.yaml file
           ansible.builtin.fetch:
@@ -23,7 +23,7 @@
       block:
         - name: Remove designated users
           ansible.builtin.script:
-            cmd: "{{ GIT }}remove.rb {{ FLAG }} {{ TEST }} {{ WPATH }}"
+            cmd: "{{ GIT }}remove.rb {{ FLAG }} {{ TEST }} {{ TESTPATH }}"
 
         - name: Download the candidates for deletion file
           ansible.builtin.fetch:

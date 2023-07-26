@@ -9,7 +9,7 @@
       tags: solo
       block:
         - name: Get the list of WordPress site urls
-          ansible.builtin.command: wp site list --url="{{ TEST }}" --path="{{ WPATH }}" --field=url
+          ansible.builtin.command: wp site list --url="{{ TEST }}" --path="{{ TESTPATH }}" --field=url
           register: solo
           changed_when: solo.rc != 0
 
@@ -19,11 +19,23 @@
             dest: sources/urls.txt
             mode: "0644"
 
+        - name: Trim https prefix
+          ansible.builtin.replace:
+            path: sources/urls.txt
+            regexp: "https:\/\/"
+            replace: ""
+
+        - name: Trim http prefix
+          ansible.builtin.replace:
+            path: sources/urls.txt
+            regexp: "http:\/\/"
+            replace: ""
+
     - name: Create the blogs.csv file
       tags: duo
       block:
         - name: Get urls and blog_ids
-          ansible.builtin.command: wp site list --url="{{ TEST }}" --path="{{ WPATH }}" --fields=blog_id,url --format=csv
+          ansible.builtin.command: wp site list --url="{{ TEST }}" --path="{{ TESTPATH }}" --fields=blog_id,url --format=csv
           register: duo
           changed_when: duo.rc != 0
 
@@ -49,6 +61,6 @@
     - name: Write message to logging
       ansible.builtin.lineinfile:
         path: logs/ansible.log
-        line: "{{ now(true) }} - Source files successfully created."
+        line: "{{ now(true) }} - Source files successfully created"
         create: true
 ...

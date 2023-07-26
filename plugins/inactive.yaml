@@ -1,0 +1,50 @@
+---
+- name: Create a list of WordPress plugins
+  hosts: chimera
+  vars_files: ../defaults/main.yaml
+  gather_facts: false
+  ignore_errors: true
+  tasks:
+    - name: Build a complete list of plugins organzied by site
+      tags: granular
+      block:
+        - name: Compile the per site plugin list
+          ansible.builtin.script:
+            cmd: "{{ GIT }}plugins/report.rb {{ TESTPATH }} inactive"
+
+        - name: Download the site-inactive-plugins.yaml file
+          ansible.builtin.fetch:
+            src: plugins/site-inactive-plugins.yaml
+            dest: "{{ GIT }}results/"
+            flat: true
+
+    - name: Build a complete list of plugins at the domain level
+      tags: single
+      block:
+        - name: Compile the domain level plugin list
+          ansible.builtin.script:
+            cmd: "{{ GIT }}plugins/list.rb {{ TESTPATH }} inactive"
+
+        - name: Filter out duplicates from domain-unfiltered-inactive-plugins.txt
+          ansible.builtin.script:
+            cmd: "{{ GIT }}plugins/uniq.rb plugins/domain-unfiltered-inactive-plugins.txt plugins/inactive-plugins-list.txt"
+
+        - name: Download the inactive-plugins-list file
+          ansible.builtin.fetch:
+            src: plugins/inactive-plugins-list.txt
+            dest: "{{ GIT }}results/"
+            flat: true
+
+    - name: Build a complete list of plugins and their version at the domain level
+      tags: combo
+      block:
+        - name: Compile the domain level plugin/version list
+          ansible.builtin.script:
+            cmd: "{{ GIT }}plugins/make.rb inactive"
+
+        - name: Download the domain-inactive-plugins.yaml file
+          ansible.builtin.fetch:
+            src: plugins/domain-inactive-plugins.yaml
+            dest: "{{ GIT }}results/"
+            flat: true
+...

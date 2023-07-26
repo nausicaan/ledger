@@ -2,7 +2,7 @@
 
 Ledger is an Ansible playbook which, together with multiple Ruby scripts, gathers and saves meta data relating to a WordPress users site specific accounts.
 
-![Ledger](ledger.jpg)
+![Ledger](ledger.webp)
 
 *Image by [Freepik](https://www.freepik.com/author/freepik) on [freepik.com](https://www.freepik.com)*
 
