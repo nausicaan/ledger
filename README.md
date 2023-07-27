@@ -10,10 +10,11 @@ Ledger is an Ansible playbook which, together with multiple Ruby scripts, gather
 
 Variables declared in a defaults/main.yaml file:
 
-- WPATH: Path to the wordpress installation.
-- GIT: Local path to the git repository.
-- TEST: WordPress test server root domain.
+- PRODPATH: Path to the wordpress production server installation.
+- TESTPATH: Path to the wordpress test server installation.
 - PROD: WordPress production server root domain.
+- TEST: WordPress test server root domain.
+- GIT: Local path to the git repository.
 
 ```console
 - name: Create a list of user/sites
