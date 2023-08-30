@@ -18,31 +18,26 @@ Variables declared in a defaults/main.yaml file:
 
 ``` yaml
 - name: Create a list of user/sites
-  hosts: chimera
+  hosts: "{{ node }}"
   vars_files: defaults/main.yaml
   gather_facts: false
   ignore_errors: true
   tasks:
-    - name: Compile the user data
-      ansible.builtin.script:
-        cmd: "{{ GIT }}accounts.rb {{ WPATH }} {{ TEST }}"
-
-    - name: Download the compendium.yaml file
-      ansible.builtin.fetch:
-        src: yaml/compendium.yaml
-        dest: "{{ GIT }}results/"
-        flat: true
+    - name: Build a complete list of users and their WordPress accounts
+      tags: compile
+      block:
+        - name: Compile the user data
+          ansible.builtin.script:
+            cmd: "{{ GIT }}accounts.rb {{ root }} {{ path }}"
 ```
 
 ## Run
 
 Navigate to the folder containing your *accounts.yaml* file and (dependent on the location of your inventory file) run:
 
-``` bash
-ansible-playbook -i ~/inventory.yaml accounts.yaml --extra-vars "FLAG=[flag]"
+``` console
+ansible-playbook -i ~/inventory.yaml accounts.yaml --extra-vars "node=[server_name] path={{ PRODPATH }} root={{ PROD }}"
 ```
-
-Current supported flags are `-k` (Delete identified users) `-c` (Create a list of candidates for deletion) 
 
 **Note**: Playbooks *source.yaml* and *reference.yaml* need to be run at least once prior to *accounts.yaml* to build the dependent files.
 

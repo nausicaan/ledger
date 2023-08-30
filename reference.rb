@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
-$stdin.flush
-$stdout.flush
-$stdout.sync = true
+require Dir.home + '/common.rb'
 
 arguments = ARGV
 choice = arguments[0]
@@ -9,13 +7,6 @@ list = (File.read(Dir.home + '/sources/blogs.csv'))
 @blogs = list.split(',')
 ID = '  - ID: '
 URL = '    URL: '
-
-# Write a passed variable to a named file
-def document(dest, content)
-  open(Dir.home + "#{dest}", 'w') do |f|
-    f.print content
-  end
-end
 
 # Create a list of all WP sites (Blog ID and URL)
 def duo()

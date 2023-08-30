@@ -1,6 +1,13 @@
 ---
+- name: Create the necessary source files
+  ansible.builtin.import_playbook: source.yaml
+  vars:
+    root: "{{ root }}"
+    path: "{{ path }}"
+    node: "{{ node }}"
+
 - name: Build the reference yaml files capturing variations of site data
-  hosts: chimera
+  hosts: "{{ node }}"
   vars_files: defaults/main.yaml
   gather_facts: false
   ignore_errors: true
@@ -29,13 +36,13 @@
     - name: Download the reference files
       ansible.builtin.fetch:
         src: "{{ item }}"
-        dest: "{{ GIT }}results/"
+        dest: "{{ GIT }}sources/"
         flat: true
         mode: '0644'
       loop:
         - sources/urls-ids.yaml
         - sources/urls.yaml
-        - yaml/blog-types.yaml
+        - results/blog-types.yaml
 
     - name: Write message to logging
       ansible.builtin.lineinfile:

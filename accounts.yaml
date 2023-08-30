@@ -1,6 +1,6 @@
 ---
 - name: Create a list of user/sites
-  hosts: chimera
+  hosts: "{{ node }}"
   vars_files: defaults/main.yaml
   gather_facts: false
   ignore_errors: true
@@ -10,26 +10,36 @@
       block:
         - name: Compile the user data
           ansible.builtin.script:
-            cmd: "{{ GIT }}accounts.rb {{ TEST }} {{ TESTPATH }}"
+            cmd: "{{ GIT }}accounts.rb {{ root }} {{ path }}"
 
-        - name: Download the compendium.yaml file
+        - name: Download the compendium.csv file
           ansible.builtin.fetch:
-            src: yaml/compendium.yaml
+            src: yaml/compendium.csv
             dest: "{{ GIT }}results/"
             flat: true
 
-    - name: Delete obsolete users from WordPress
-      tags: remove
+    - name: Record a list of obsolete users from WordPress
+      tags: mark
       block:
-        - name: Remove designated users
+        - name: Mark designated users
           ansible.builtin.script:
-            cmd: "{{ GIT }}remove.rb {{ FLAG }} {{ TEST }} {{ TESTPATH }}"
+            cmd: "{{ GIT }}mark.rb {{ root }} {{ path }} {{ GIT }}common.rb"
 
         - name: Download the candidates for deletion file
           ansible.builtin.fetch:
-            src: "sources/candidates.csv"
+            src: "{{ item }}"
             dest: "{{ GIT }}results/"
             flat: true
+          loop:
+            - sources/candidates.csv
+            - sources/candidates.txt
+
+    - name: Demote obsolete users from WordPress
+      tags: demote
+      block:
+        - name: Demote designated users
+          ansible.builtin.script:
+            cmd: "{{ GIT }}demote.rb {{ path }}"
 
     - name: Write message to logging
       ansible.builtin.lineinfile:

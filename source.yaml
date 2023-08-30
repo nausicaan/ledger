@@ -1,6 +1,6 @@
 ---
 - name: Create sources for building infrastructure files
-  hosts: chimera
+  hosts: "{{ node }}"
   vars_files: defaults/main.yaml
   gather_facts: false
   ignore_errors: true
@@ -9,7 +9,7 @@
       tags: solo
       block:
         - name: Get the list of WordPress site urls
-          ansible.builtin.command: wp site list --url="{{ TEST }}" --path="{{ TESTPATH }}" --field=url
+          ansible.builtin.command: wp site list --url="{{ root }}" --path="{{ path }}" --field=url
           register: solo
           changed_when: solo.rc != 0
 
@@ -35,7 +35,7 @@
       tags: duo
       block:
         - name: Get urls and blog_ids
-          ansible.builtin.command: wp site list --url="{{ TEST }}" --path="{{ TESTPATH }}" --fields=blog_id,url --format=csv
+          ansible.builtin.command: wp site list --url="{{ root }}" --path="{{ path }}" --fields=blog_id,url --format=csv
           register: duo
           changed_when: duo.rc != 0
 

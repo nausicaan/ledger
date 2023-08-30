@@ -1,10 +1,13 @@
 #!/usr/bin/env ruby
-$stdin.flush
-$stdout.flush
-$stdout.sync = true
+# $stdin.flush
+# $stdout.flush
+# $stdout.sync = true
+
 arguments = ARGV
 require 'yaml'
+require Dir.home + '/common.rb'
 
+@simplecsv = "ID,Name,Blog,URL,Role,Timestamp\n"
 @compendium = "---\n"
 server, path  = arguments[0], arguments[1]
 ids = File.readlines(Dir.home + "/sources/everyone.txt")
@@ -65,6 +68,23 @@ def get_url(nums)
   return response
 end
 
+def makecsv(nickname)
+  index = 1
+  capacity = @collection.length
+  while index < capacity do
+    @simplecsv << "#{@collection[0]},"
+    @simplecsv << "#{nickname},"
+    @simplecsv << "#{@collection[index]},"
+    link = get_url(@collection[index])
+    record = get_ts(@collection[index])
+    @simplecsv << "#{link},"
+    index += 1
+    @simplecsv << "#{@collection[index]},"
+    @simplecsv << "#{record}\n"
+    index += 2
+  end
+end
+
 # Piece together the results of the wp user meta list commands into a yaml ready variable
 def stitch(nickname)
   index = 1
@@ -77,7 +97,11 @@ def stitch(nickname)
     record = get_ts(@collection[index])
     @compendium << "    URL: #{link}\n"
     index += 1
-    @compendium << "    Role: #{@collection[index]}\n"
+    if @collection[index].length > 20
+      @compendium << "    Role: administrator\n"
+    else
+      @compendium << "    Role: #{@collection[index]}\n"
+    end
     @compendium << "    Timestamp: " << "#{record}" << "\n"
     index += 2
   end
@@ -93,10 +117,15 @@ ids.each do |line|
     nickname = %x[wp user get "#{@collection[0]}" --field=login --url="#{server}" --path="#{path}"]
     nickname.chomp!
     stitch(nickname)
+    makecsv(nickname)
   end
 end
 
 @compendium << '...'
+
+open(Dir.home + '/yaml/compendium.csv', 'w') do |f|
+  f.print "#{@simplecsv}"
+end
 
 open(Dir.home + '/yaml/compendium.yaml', 'w') do |f|
   f.print "#{@compendium}"
