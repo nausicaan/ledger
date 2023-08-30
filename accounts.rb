@@ -123,10 +123,10 @@ end
 
 @compendium << '...'
 
-open(Dir.home + '/yaml/compendium.csv', 'w') do |f|
+open(Dir.home + '/results/compendium.csv', 'w') do |f|
   f.print "#{@simplecsv}"
 end
 
-open(Dir.home + '/yaml/compendium.yaml', 'w') do |f|
+open(Dir.home + '/results/compendium.yaml', 'w') do |f|
   f.print "#{@compendium}"
 end

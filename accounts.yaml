@@ -14,7 +14,7 @@
 
         - name: Download the compendium.csv file
           ansible.builtin.fetch:
-            src: yaml/compendium.csv
+            src: results/compendium.csv
             dest: "{{ GIT }}results/"
             flat: true
 

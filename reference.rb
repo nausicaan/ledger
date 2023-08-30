@@ -81,7 +81,7 @@ def catagory(id, url)
   end
     
   compile = "---\n" << blog << engage << events << forms << vanity << workingforyou << '...'
-  document('/yaml/blog-types.yaml', compile)
+  document('/results/blog-types.yaml', compile)
 end
 
 # Decision tree

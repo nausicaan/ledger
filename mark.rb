@@ -13,7 +13,7 @@ def target(who, ts, uid, where)
   end
 end
 
-users = YAML.load_file(Dir.home + '/yaml/compendium.yaml')
+users = YAML.load_file(Dir.home + '/results/compendium.yaml')
 
 # Run the target function for every user instance
 users.each do |user|
