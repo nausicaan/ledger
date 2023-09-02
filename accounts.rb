@@ -1,8 +1,4 @@
 #!/usr/bin/env ruby
-# $stdin.flush
-# $stdout.flush
-# $stdout.sync = true
-
 arguments = ARGV
 require 'yaml'
 require Dir.home + '/common.rb'
@@ -12,16 +8,16 @@ require Dir.home + '/common.rb'
 server, path  = arguments[0], arguments[1]
 ids = File.readlines(Dir.home + "/sources/everyone.txt")
 @blogs = YAML.load_file(Dir.home + '/sources/urls-ids.yaml')
-@deletions = ['"', "wp_", "_capabilities", "a:1:", "a:2:", "s:6:", "s:10:", "s:12:", "s:13:", ";b:1;", "asset-loader", "{", "}"]
 
 # Filter out extraneous information from the cap variable
 def trim_cap(meta)
+  deletions = ['"', "wp_", "_capabilities", "a:1:", "a:2:", "s:6:", "s:10:", "s:12:", "s:13:", ";b:1;", "asset-loader", "{", "}"]
   index = 0
   meta.gsub!("\n", ',')
   meta.gsub!('wp_capabilities', '1')
   meta.gsub!('a:0:{}', 'role blank')
-  while index < @deletions.length do
-    meta.gsub!(@deletions[index], "")
+  while index < deletions.length do
+    meta.gsub!(deletions[index], "")
     index += 1
   end
   @collection = meta.split(',')
@@ -68,7 +64,7 @@ def get_url(nums)
   return response
 end
 
-def makecsv(nickname)
+def make_csv(nickname)
   index = 1
   capacity = @collection.length
   while index < capacity do
@@ -117,16 +113,19 @@ ids.each do |line|
     nickname = %x[wp user get "#{@collection[0]}" --field=login --url="#{server}" --path="#{path}"]
     nickname.chomp!
     stitch(nickname)
-    makecsv(nickname)
+    make_csv(nickname)
   end
 end
 
 @compendium << '...'
 
-open(Dir.home + '/results/compendium.csv', 'w') do |f|
-  f.print "#{@simplecsv}"
-end
+document('/results/compendium.csv', @simplecsv)
+document('/results/compendium.yaml', @compendium)
 
-open(Dir.home + '/results/compendium.yaml', 'w') do |f|
-  f.print "#{@compendium}"
-end
+# open(Dir.home + '/results/compendium.csv', 'w') do |f|
+#   f.print "#{@simplecsv}"
+# end
+
+# open(Dir.home + '/results/compendium.yaml', 'w') do |f|
+#   f.print "#{@compendium}"
+# end

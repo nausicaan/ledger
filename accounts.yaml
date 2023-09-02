@@ -23,7 +23,7 @@
       block:
         - name: Mark designated users
           ansible.builtin.script:
-            cmd: "{{ GIT }}mark.rb {{ root }} {{ path }} {{ GIT }}common.rb"
+            cmd: "{{ GIT }}mark.rb {{ root }} {{ path }}"
 
         - name: Download the candidates for deletion file
           ansible.builtin.fetch:

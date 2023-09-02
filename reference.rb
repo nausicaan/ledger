@@ -1,10 +1,9 @@
 #!/usr/bin/env ruby
 require Dir.home + '/common.rb'
-
-arguments = ARGV
-choice = arguments[0]
 list = (File.read(Dir.home + '/sources/blogs.csv'))
 @blogs = list.split(',')
+arguments = ARGV
+choice = arguments[0]
 ID = '  - ID: '
 URL = '    URL: '
 
@@ -14,10 +13,10 @@ def duo()
   index = 0
 
   while index < @blogs.length do
-      e << "- ID: #{@blogs[index]}\n"
-      index += 1
-      e << "  URL: #{@blogs[index]}\n"
-      index += 1
+    e << "- ID: #{@blogs[index]}\n"
+    index += 1
+    e << "  URL: #{@blogs[index]}\n"
+    index += 1
   end
 
   e << '...'
@@ -45,6 +44,7 @@ def catagory(id, url)
 
   while index < @blogs.length() do
     variety = 'other'
+
     types.each do |line|
       line.chomp!
       if "#{@blogs[index]}".include? "#{line}"
