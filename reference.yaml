@@ -42,6 +42,7 @@
       loop:
         - sources/urls-ids.yaml
         - sources/urls.yaml
+        - sources/urls.txt
         - results/blog-types.yaml
 
     - name: Write message to logging

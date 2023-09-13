@@ -31,6 +31,10 @@
             regexp: "http:\/\/"
             replace: ""
 
+        - name: Sort the list
+          ansible.builtin.script:
+            cmd: "{{ GIT }}order.py"
+
     - name: Create the blogs.csv file
       tags: duo
       block:

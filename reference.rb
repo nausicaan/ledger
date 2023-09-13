@@ -38,7 +38,7 @@ end
 
 # Create a list of all WP sites (Blog ID and URL) organized by type
 def catagory(id, url)
-  types = ['test.engage', 'test.events', 'test.forms', 'test.vanity', 'test.workingforyou']
+  types = ['engage', 'events', 'forms', 'vanity', 'workingforyou']
   blog, engage, events, forms, vanity, workingforyou = "Misc:\n", "Engage:\n", "Events:\n", "Forms:\n", "Vanity:\n", "Workingforyou:\n"
   index = 1
 
@@ -53,23 +53,23 @@ def catagory(id, url)
     end
 
     case variety
-    when 'test.forms'
+    when 'forms'
       forms << id << "#{@blogs[index - 1]}\n"
       forms << url << "#{@blogs[index]}\n"
       index += 2
-    when 'test.engage'
+    when 'engage'
       engage << id << "#{@blogs[index - 1]}\n"
       engage << url << "#{@blogs[index]}\n"
       index += 2
-    when 'test.events'
+    when 'events'
       events << id << "#{@blogs[index - 1]}\n"
       events << url << "#{@blogs[index]}\n"
       index += 2
-    when 'test.vanity'
+    when 'vanity'
       vanity << id << "#{@blogs[index - 1]}\n"
       vanity << url << "#{@blogs[index]}\n"
       index += 2
-    when 'test.workingforyou'
+    when 'workingforyou'
       workingforyou << id << "#{@blogs[index - 1]}\n"
       workingforyou << url << "#{@blogs[index]}\n"
       index += 2

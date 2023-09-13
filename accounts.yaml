@@ -34,13 +34,6 @@
             - sources/candidates.csv
             - sources/candidates.txt
 
-    - name: Demote obsolete users from WordPress
-      tags: demote
-      block:
-        - name: Demote designated users
-          ansible.builtin.script:
-            cmd: "{{ GIT }}demote.rb {{ path }}"
-
     - name: Write message to logging
       ansible.builtin.lineinfile:
         path: logs/ansible.log

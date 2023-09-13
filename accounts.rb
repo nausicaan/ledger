@@ -64,6 +64,7 @@ def get_url(nums)
   return response
 end
 
+# Create a variable used to write a csv file
 def make_csv(nickname)
   index = 1
   capacity = @collection.length
